@@ -1,12 +1,12 @@
-import { getSelectedText, Clipboard, showHUD, showToast, Toast } from "@raycast/api";
+import { getSelectedText, Clipboard, showToast, Toast, getPreferenceValues } from "@raycast/api";
 import { telexTransform } from "./telex";
-
 const defaultSkipWords = [
   "access",
   "actor",
   "class",
   "color",
   "complex",
+  "core",
   "doctor",
   "door",
   "error",
@@ -39,13 +39,24 @@ const defaultSkipWords = [
   "stress",
   "stuff",
   "success",
+  "text",
   "virus",
   "yes",
   "are",
   "good",
-  "text",
-  "core",
 ];
+
+function loadSkipWords(): string[] {
+  const { customSkipWords } = getPreferenceValues<{ customSkipWords?: string }>();
+  if (!customSkipWords) return defaultSkipWords;
+  const custom = customSkipWords
+    .split(",")
+    .map((w) => w.trim().toLowerCase())
+    .filter(Boolean);
+
+  return custom.length ? [...new Set([...defaultSkipWords, ...custom])] : defaultSkipWords;
+}
+
 export default async function Command() {
   try {
     const selectedText = await getSelectedText();
@@ -54,12 +65,7 @@ export default async function Command() {
       return;
     }
 
-    const result = telexTransform(selectedText, defaultSkipWords);
-
-    await Clipboard.paste(result);
-    await Clipboard.copy(result);
-
-    await showHUD("Copied to clipboard");
+    await Clipboard.paste(telexTransform(selectedText, loadSkipWords()));
   } catch (error) {
     await showToast({
       style: Toast.Style.Failure,

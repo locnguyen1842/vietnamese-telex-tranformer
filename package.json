@@ -18,12 +18,21 @@
       "name": "vntelex-transform",
       "title": "Transform Vietnamese Telex",
       "description": "Transform Vietnam's Telex text to Vietnamese text",
-      "mode": "no-view"
+      "mode": "no-view",
+      "preferences": [
+        {
+          "name": "customSkipWords",
+          "type": "textfield",
+          "required": false,
+          "title": "Custom Skip Words",
+          "description": "Comma-separated words to skip during Telex transformation. Merged with built-in list.",
+          "placeholder": "hero, dore, chloe"
+        }
+      ]
     }
   ],
   "dependencies": {
-    "@raycast/api": "^1.104.13",
-    "@raycast/utils": "^1.17.0"
+    "@raycast/api": "^1.104.13"
   },
   "devDependencies": {
     "@raycast/eslint-config": "^2.0.4",
